@@ -15,15 +15,30 @@ app.get('/post',(req,res)=>{
         if(err) return console.error(err);
         let content = JSON.parse(buff);
         if(content.score < req.headers.score)
-        fs.writeFile("scores.json",JSON.stringify({score: req.headers.score}), (err, buff)=>{
-            if(err) return console.error(err);
-            res.send("Saved Score");
-        })
+        searchReplaceFile(/ (.*)/gm, " "+req.headers.score, "scores.json")
         else
             res.send("Already higher score");
 
-    })
+    });
 
-})
+});
+
+function searchReplaceFile(regexpFind, replace, cssFileName) {
+    var file = fs.createReadStream(cssFileName, 'utf8');
+    var newCss = '';
+
+    file.on('data', function (chunk) {
+        newCss += chunk.toString().replace(regexpFind, replace);
+    });
+
+    file.on('end', function () {
+        fs.writeFile(cssFileName, newCss, function(err) {
+            if (err) {
+                return console.log(err);
+            } else {
+                console.log('Updated!');
+            }
+    });
+});
 
 app.listen(process.env.PORT || 3000, console.log("Server running on port 3000!"));
