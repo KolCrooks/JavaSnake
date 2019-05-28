@@ -1,44 +1,44 @@
 let express = require('express');
 let fs = require('fs');
+let Sequelize = require('sequelize')
 let app = express();
-
+const Model = Sequelize.Model;
+class HS extends Model {}
+HS.init({
+  // attributes
+  id: {
+    primaryKey: true,
+    allowNull: false,
+    type: Sequelize.NUMBER
+  },
+  score: {
+    defaultValue: 0,
+    allowNull: false,
+    type: Sequelize.NUMBER
+  }
+}, {
+  sequelize,
+  modelName: 'user'
+  // options
+});
 app.get('/get',(req,res)=>{
-    fs.readFile("scores.json",(err, buff)=>{
-        if(err) return console.error(err);
-        let content = JSON.parse(buff);
-        res.send(""+content.score);
+    HS.findOrCreate(
+        {where:{id:0}}
+    ).then((val,created)=>{
+        res.send(val.score + "")
     })
+
 });
 
 app.get('/post',(req,res)=>{
-    fs.readFile("scores.json",(err, buff)=>{
-        if(err) return console.error(err);
-        let content = JSON.parse(buff);
-        if(content.score < req.headers.score)
-        searchReplaceFile(/ (.*)/gm, " "+req.headers.score, "scores.json")
-        else
-            res.send("Already higher score");
-
-    });
-
+    HS.update({score:req.headers.score}, {where:{id:0}}).then(()=>{
+        res.send("success");
+    })
 });
 
-function searchReplaceFile(regexpFind, replace, cssFileName) {
-    var file = fs.createReadStream(cssFileName, 'utf8');
-    var newCss = '';
-
-    file.on('data', function (chunk) {
-        newCss += chunk.toString().replace(regexpFind, replace);
-    });
-
-    file.on('end', function () {
-        fs.writeFile(cssFileName, newCss, function(err) {
-            if (err) {
-                return console.log(err);
-            } else {
-                console.log('Updated!');
-            }
-    });
-});
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: 'path/to/database.sqlite'
+  });
 
 app.listen(process.env.PORT || 3000, console.log("Server running on port 3000!"));
