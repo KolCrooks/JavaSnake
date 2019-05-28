@@ -6,8 +6,9 @@ const Model = Sequelize.Model;
 class HS extends Model {}
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: './database.sqlite'
-  });
+    storage: './database.sqlite',
+    logging: false
+});
 
 
 HS.init({
@@ -31,6 +32,7 @@ app.get('/get',(req,res)=>{
     HS.findOrCreate(
         {where:{id:0}}
     ).then((val,created)=>{
+        console.log(val)
         res.send(val.score + "")
     })
 
