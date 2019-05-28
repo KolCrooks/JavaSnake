@@ -32,8 +32,8 @@ app.get('/get',(req,res)=>{
     HS.findOrCreate(
         {where:{id:0}}
     ).then((val,created)=>{
-        console.log(val)
-        res.send(val.score + "")
+        console.log(val.dataValues)
+        res.send(val.dataValues.score + "")
     })
 
 });
