@@ -42,4 +42,6 @@ app.get('/post',(req,res)=>{
     })
 });
 
+sequelize.sync();
+
 app.listen(process.env.PORT || 3000, console.log("Server running on port 3000!"));
