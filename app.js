@@ -4,6 +4,12 @@ let Sequelize = require('sequelize')
 let app = express();
 const Model = Sequelize.Model;
 class HS extends Model {}
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: './database.sqlite'
+  });
+
+
 HS.init({
   // attributes
   id: {
@@ -35,10 +41,5 @@ app.get('/post',(req,res)=>{
         res.send("success");
     })
 });
-
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'path/to/database.sqlite'
-  });
 
 app.listen(process.env.PORT || 3000, console.log("Server running on port 3000!"));
