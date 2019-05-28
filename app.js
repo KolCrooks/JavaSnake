@@ -18,7 +18,7 @@ HS.init({
   }
 }, {
   sequelize,
-  modelName: 'user'
+  modelName: 'hs'
   // options
 });
 app.get('/get',(req,res)=>{
